@@ -207,10 +207,14 @@ em {
   transition: opacity 0.18s ease-out;
   z-index: 9999;
   max-width: 480px;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 #hover-preview img {
   display: block;
   width: 100%;
   height: auto;
+  background: transparent !important;
+  box-shadow: none !important;
 }
