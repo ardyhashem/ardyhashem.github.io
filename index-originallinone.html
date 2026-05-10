@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Ctext%20x%3D%22120%22%20y%3D%22320%22%20font-family%3D%22monospace%22%20font-size%3D%22240%22%20fill%3D%22%23A855F7%22%3E%3E_%3C/text%3E%3C/svg%3E">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ardy Hashem — One Pager</title>
+
+<style>
+body::before {
+  content: "";
+  position: fixed;
+  top: -20%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(circle at 30% 30%, rgba(106,13,173,0.15), transparent 60%),
+              radial-gradient(circle at 70% 70%, rgba(106,13,173,0.12), transparent 60%);
+  animation: floatBlobs 22s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes floatBlobs {
+  0%   { transform: translate(0,0) scale(1); }
+  100% { transform: translate(-5%, -5%) scale(1.1); }
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f7f7f7;
+    color: #222;
+    overflow: hidden; /* prevents scrollbars around scaled content */
+  }
+
+  /* NEW: Fullscreen wrapper that calculates scale */
+  .outer-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Option 1: Minimum scale + responsive scaling */
+    --scale: calc(max(0.55, min(100vw / 1400, 100vh / 900)));
+  }
+
+  /* NEW: Fixed-size design canvas that scales as one unit */
+  .scaled-content {
+    width: 1400px;
+    height: 700px;
+    transform-origin: top left;
+    transform: scale(var(--scale));
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(106, 13, 173, 0.25);
+    overflow: hidden;
+  }
+
+  /* Your original layout now lives inside scaled-content */
+  .page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 40px;
+    box-sizing: border-box;
+    background: white;
+  }
+
+  .left {
+    width: 25%;
+    padding-right: 40px;
+    border-right: 3px solid #6A0DAD;
+  }
+
+  .right {
+    width: 75%;
+    padding-left: 40px;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+    color: #6A0DAD;
+    border-bottom: 2px solid #6A0DAD;
+    margin-bottom: 5px;
+  }
+
+  h2 {
+    margin-top: 25px;
+    font-size: 1.3rem;
+    color: #6A0DAD;
+    border-bottom: 2px solid #6A0DAD;
+    padding-bottom: 5px;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  .section p, .section li {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .profile-img {
+    width: 50%;
+    max-width: 260px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  
+  ul { 
+    padding-left: 20px;
+    list-style-position: outside;
+    }
+    
+    ul li::marker {
+        color: #6A0DAD; /* Purple bullets */
+        font-weight: bold;
+    }
+
+  strong {
+    font-weight: 700;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  /* --------------------------------------------- */
+  /* NEW: Mobile fallback layout                   */
+  /* --------------------------------------------- */
+  @media (max-width: 900px) {
+
+    body {
+      overflow: auto; /* allow scrolling on mobile */
+    }
+
+    .outer-wrapper {
+      display: block;
+      height: auto;
+      width: 100%;
+      --scale: 1; /* disable scaling */
+    }
+
+    .scaled-content {
+      transform: none; /* remove scale */
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .page {
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .left, .right {
+      width: 100%;
+      padding: 0;
+      border-right: none;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+/* Background layer for falling prompts */
+.prompt-rain {
+  position: fixed;
+  inset: 0;               /* top:0; right:0; bottom:0; left:0 */
+  pointer-events: none;   /* don't block clicks */
+  overflow: hidden;
+  z-index: -1;            /* behind your main content; raise if needed */
+}
+
+/* Individual prompt */
+.prompt-rain__item {
+  position: absolute;
+  top: -40px;             /* start above viewport */
+  font-family: "Fira Code", "JetBrains Mono", monospace;
+  font-size: 14px;
+  color: rgba(180, 120, 255, 0.9); /* purple accent */
+  text-shadow: 0 0 8px rgba(180, 120, 255, 0.9);
+  white-space: nowrap;
+  opacity: 0;
+  animation-name: prompt-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Falling animation */
+@keyframes prompt-fall {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 110vh, 0);
+    opacity: 0;
+  }
+}
+
+#hover-preview {
+  position: absolute;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+  z-index: 9999;
+  max-width: 480px;
+}
+
+#hover-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+
+</style>
+</head>
+
+<body>
+<div class="prompt-rain"></div>
+<div class="outer-wrapper">
+  <div class="scaled-content">
+
+    <div class="page">
+
+      <!-- LEFT COLUMN -->
+      <div class="left">
+        <!--img src="https://images.credly.com/images/43d50d31-1636-4f57-ba0c-5d5839ab413f/1761082377640.jpeg" 
+             alt="Profile Photo" class="profile-img"-->
+        <h1><strong>Ardy Hashem</strong></h1>
+        <div class="title"><strong>Infrastructure Transformation</br> Associate Manager</strong></div>
+
+        <h2>Contact</h2>
+        <p>
+          <strong>Email:</strong> Ardy.Hashem@accenture.com<br>
+          <strong>Location:</strong> New York, USA
+        </p>
+
+        <h2>Areas of Expertise</h2>
+        <ul>
+          <li><strong>Risk Management</strong></li>
+          <li><strong>Program Management</strong></li>
+          <li><strong>Application Development</strong></li>
+          <li><strong>Secure Cloud Architecture</strong></li>
+          <li><strong>DevOps Best Practices</strong></li>
+          <li><strong>Network & App Support</strong></li>
+        </ul>
+
+        <h2>
+          <a href="https://www.credly.com/users/ardavan-hashemzadeh/badges#credly"
+             target="_blank" rel="noopener"
+             style="color: #6A0DAD; text-decoration: none; font-weight: bold;">
+            Certifications
+          </a>
+        </h2>
+        <ul>
+          <li class="cert" data-cert="https://images.credly.com/size/340x340/images/772a2b31-1440-46a2-9c3c-96b8c05c5819/blob"><em>Accenture Reinvention with Agentic AI</em></li>
+          <li class="cert" data-cert="https://images.credly.com/size/340x340/images/00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png"><em>AWS CCP</em></li>
+          <li class="cert" data-cert="https://images.credly.com/size/340x340/images/232b7f85-ee1c-4b3e-a4be-887d56681d97/cfcd-from-cffsite.png"><em>Cloud Foundry CFCD</em></li>
+          <li class="cert" data-cert="https://images.credly.com/size/340x340/images/ec23e41a-0f32-4a98-9c00-28925621b281/blob"><em>Generative AI Leader</em></li>
+          <li class="cert" data-cert="https://images.credly.com/size/340x340/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob"><em>Kubernetes KCAD</em></li>
+          <li class="cert" data-cert="https://images.credly.com/size/340x340/images/0dc62494-dc94-469a-83af-e35309f27356/blob"><em>Terraform 003</em></li>
+        </ul>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right">
+        <h2>
+          <a href="https://www.linkedin.com/in/ardyhash/"
+             target="_blank" rel="noopener"
+             style="color: #6A0DAD; text-decoration: none; font-weight: bold;">
+             Professional Background
+          </a>
+        </h2>
+        <p>
+          Ardy is a <strong>security‑minded technology architect</strong> with over 
+          <strong>16 years of experience</strong> designing, scaling, and migrating 
+          applications and infrastructure across the <em>healthcare</em> and 
+          <em>CMT industries</em>. A lifelong learner passionate about mastering 
+          technology, his work spans authoring desktop/mobile applications to 
+          architecting <strong>automation and autoremediation platforms</strong> supporting 
+          environments with up to <strong>millions of transactions per second</strong> using enterprise 
+          tooling and open‑source technologies. He graduated 
+          <strong><em>Magna Cum Laude</em></strong> with a Bachelor's in 
+          <strong>Computer Engineering Technology</strong>.
+        </p>
+
+        <h2>Key Select Experience</h2>
+
+        <h3><strong>Americas Delivery Lead — Tier 0 Carrier & Media Conglomerate (2019–Present)</strong></h3>
+        <ul>
+          <li>Led <strong>three major transformation initiatives</strong>: cloud migration of monolithic apps into dozens of microservices, creation of a <strong>global 24/7 DevOps organization</strong>, and absorption of a dissolved internal org.</li>
+          <li>Architected an <strong>auto‑remediation platform</strong> using Vault, Concourse, Grafana, Victoria Metrics, Alerta, OpenSearch, Kubernetes, Docker, and Ansible (<em>4,500+ assets managed</em>).</li>
+          <li>Authored <strong>SSL certificate renewal automation</strong> as an Ansible role, reducing effort from days to minutes.</li>
+          <li>Developed a <strong>“Patching Pipeline Factory”</strong> improving compliance from <em>&lt;40%</em> to <em>&gt;95%</em> across thousands of hosts.</li>
+          <li>Published a <strong>“Service Swap Script”</strong> adopted by platform teams to accelerate Cloud Foundry migrations.</li>
+          <li>Created a <strong>DevOps utility script</strong> later standardized across teams; its buildpack audit feature saved days during <em>Log4Shell</em>.</li>
+        </ul>
+
+        <h3><strong>Director of Information Technology — NY Healthcare Startup (2010–2019)</strong></h3>
+        <ul>
+          <li>Architected infrastructure enabling rapid expansion from a single practice to a <strong>multi‑facility network</strong> integrated with major NYC hospital systems.</li>
+          <li>Reduced telecom spend by <strong>90%</strong> through migration to open‑source IP‑PBX and VoIP carriers.</li>
+          <li>Maintained <strong>100% uptime</strong> of critical systems and <strong>zero security incidents</strong> over nearly a decade.</li>
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div id="hover-preview"></div>
+<script data-goatcounter="https://ardyhash.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<script>
+  (function () {
+    const container = document.querySelector('.prompt-rain');
+    if (!container) return;
+
+    const promptTextOptions = [
+      'ardy@host:~#',
+      '# >_',
+      '>_',
+      '$ >_',
+    ];
+
+    const PROMPT_COUNT = 8; // how many simultaneous prompts
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createPrompt() {
+      const el = document.createElement('div');
+      el.className = 'prompt-rain__item';
+
+      el.textContent =
+        promptTextOptions[Math.floor(Math.random() * promptTextOptions.length)];
+
+      const startLeft = randomInRange(-10, 100); // percentage of viewport width
+      el.style.left = startLeft + 'vw';
+
+      const duration = randomInRange(6, 14);  // seconds
+      const delay = randomInRange(-duration, 0); // staggered start
+      const fontSize = randomInRange(11, 18); // px
+
+      el.style.fontSize = fontSize + 'px';
+      el.style.animationDuration = duration + 's';
+      el.style.animationDelay = delay + 's';
+
+      container.appendChild(el);
+    }
+
+    for (let i = 0; i < PROMPT_COUNT; i++) {
+      createPrompt();
+    }
+  })();
+</script>
+<script>
+const screenshots = [
+  "./images/testimonial1.jpeg",
+  "./images/testimonial2.jpeg",
+  "./images/testimonial3.jpeg",
+  "./images/testimonial4.jpeg",
+  "./images/testimonial5.png"
+];
+
+const preview = document.getElementById("hover-preview");
+
+// Bold text → random screenshot
+document.querySelectorAll("strong, b").forEach(el => {
+  el.addEventListener("mouseenter", () => {
+    // Skip if this strong is inside a cert element
+    if (el.closest(".cert")) return;
+
+    const random = screenshots[Math.floor(Math.random() * screenshots.length)];
+    preview.innerHTML = `<img src="${random}" />`;
+    preview.style.opacity = 1;
+
+    const rect = el.getBoundingClientRect();
+    preview.style.left = rect.right + 16 + "px";
+    preview.style.top = rect.top + "px";
+  });
+
+  el.addEventListener("mouseleave", () => {
+    if (!el.closest(".cert")) preview.style.opacity = 0;
+  });
+});
+
+// Cert items → specific certificate image
+document.querySelectorAll(".cert").forEach(cert => {
+  cert.addEventListener("mouseenter", () => {
+    const img = cert.dataset.cert;
+    preview.innerHTML = `<img src="${img}" />`;
+    preview.style.opacity = 1;
+
+    const rect = cert.getBoundingClientRect();
+    preview.style.left = rect.right + 16 + "px";
+    preview.style.top = rect.top + "px";
+  });
+
+  cert.addEventListener("mouseleave", () => {
+    preview.style.opacity = 0;
+  });
+});
+</script>
+
+
+
+    </body>
+</html>
